@@ -1,18 +1,17 @@
 pipeline {
     agent {
-        docker {
-            image 'maven:3-alpine'
-            args 'login  -u drrubinai -p 9302FirstChild https://index.docker.io/v1/ -v /root/.m2:/root/.m2'
-        }
     }
     options {
         skipStagesAfterUnstable()
     }
     stages {
         stage('Build') {
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
+ 	   withDockerRegistry(credentialsId: 'docker-reg-credentails', url: 'https://index.docker.io/v1/') {
+ 	   image = docker.image('index.docker.io/v1//ubuntu-16:1')
+  	  image.pull()
+  	  docker.image('registryhub:8085/maven:3-alpine').inside {   
+  	    sh 'mvn -B -DskipTests clean package'
+   	  }
         }
         stage('Test') {
             steps {
