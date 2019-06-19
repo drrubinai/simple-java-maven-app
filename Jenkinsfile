@@ -6,7 +6,6 @@ pipeline {
     }
     stages {
         stage('Build') {
-         steps {
 			withDockerRegistry(credentialsId: 'docker-reg-credentails', url: 'https://index.docker.io/v1/') {
 				image = docker.image('index.docker.io/v1//ubuntu-16:1')
 				image.pull()
@@ -14,7 +13,6 @@ pipeline {
 					sh 'mvn -B -DskipTests clean package'
 				}
 			}
-		 }
 		}
         stage('Test') {
             steps {
